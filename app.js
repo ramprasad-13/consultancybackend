@@ -2,12 +2,11 @@ const express = require('express')
 const nodemailer = require('nodemailer')
 const { Readable } = require('stream')
 const cors = require('cors')
-const pdf = require('html-pdf')
+
 const hostname="0.0.0.0"
 const port = process.env.PORT || 3000;
 require('dotenv').config()
 require('./connection')
-
 const formmodel = require('./models/formmodel')
 
 const app = express()
@@ -101,24 +100,13 @@ app.post("/senddata",async(req,res)=>{
             </main>
         </body>
         </html>`
-
-        // Use the functions
-        let docContent = htmlContent; // Your HTML content goes here
-        const options = { format: 'A4' };
-
-        pdf.create(docContent, options).toBuffer(function(err, buffer){
-            if (err) return console.log(err);
-            console.log("PDF created successfully!");
+        
 
             const mailOptions = {
                 from:process.env.APP_USER,
                 to:email,
                 subject:"Abroad Consultancy",
                 html:htmlContent,
-                attachments: [{
-                    filename: `invoice_${mobilenumber}.pdf`,
-                    content: new Readable.from(buffer)
-                }]
             }
 
             currentdetails.save()
