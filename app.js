@@ -1,12 +1,11 @@
 const express = require('express')
 const nodemailer = require('nodemailer')
-const { Readable } = require('stream')
 const cors = require('cors')
-
 const hostname="0.0.0.0"
 const port = process.env.PORT || 3000;
 require('dotenv').config()
 require('./connection')
+
 const formmodel = require('./models/formmodel')
 
 const app = express()
@@ -100,29 +99,28 @@ app.post("/senddata",async(req,res)=>{
             </main>
         </body>
         </html>`
-        
 
-            const mailOptions = {
-                from:process.env.APP_USER,
-                to:email,
-                subject:"Abroad Consultancy",
-                html:htmlContent,
-            }
+        const mailOptions = {
+            from:process.env.APP_USER,
+            to:email,
+            subject:"Abroad Consultancy",
+            html:htmlContent
+        }
 
-            currentdetails.save()
-            .then((details)=>{
-                //send mail here
-                transpoter.sendMail(mailOptions)
-                .then(()=>{
-                    return res.status(201).json({details});
-                })
-                .catch((error) => {
-                    console.error(error);
-                    return res.status(500).json({ message: "Sending Mail Failed" });
-                });
+
+        currentdetails.save()
+        .then((details)=>{
+            //send mail here
+            transpoter.sendMail(mailOptions)
+            .then(()=>{
+                return res.status(201).json({details});
             })
-            .catch(error => res.status(500).json(error))
-        });
+            .catch((error) => {
+                console.error(error);
+                return res.status(500).json({ message: "Sending Mail Failed" });
+            });
+        })
+        .catch(error => res.status(500).json(error))
 
     } catch (error) {
         console.error(error)
